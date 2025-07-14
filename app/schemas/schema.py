@@ -25,6 +25,7 @@ class User(Base):
     student = relationship("Student", back_populates="user", uselist=False, cascade="all, delete-orphan")
     teacher = relationship("Teacher", back_populates="user", uselist=False, cascade="all, delete-orphan")
     admin = relationship("Admin", back_populates="user", uselist=False, cascade="all, delete-orphan")
+    roomBook = relationship("RoomBooking", back_populates="user", uselist=False, cascade="all, delete-orphan")
 
 # ----------------- STUDENT -----------------
 class Student(Base):
@@ -58,11 +59,14 @@ class Result(Base):
 
     id = Column(Integer, primary_key=True)
     semester = Column(String(50))
-    courses = Column(Text)  # you may normalize later
     grade = Column(String(10))
+
     student_id = Column(Integer, ForeignKey("students.id", ondelete="CASCADE", onupdate="CASCADE"))
+    course_id = Column(Integer, ForeignKey("courses.id", ondelete="CASCADE", onupdate="CASCADE"))
 
     student = relationship("Student", back_populates="results")
+    course = relationship("Course", back_populates="results")
+
 
 # ----------------- COURSE -----------------
 class CourseTypeEnum(str, enum.Enum):
@@ -83,15 +87,22 @@ class Course(Base):
     active = Column(Boolean, default=True)
     content = Column(Text)
     degree = Column(String(100))
-    teacher = Column(String(100))  # FK to Teacher table later if needed
+
+    teacher_id = Column(Integer, ForeignKey("teachers.id", ondelete="SET NULL", onupdate="CASCADE"))
+    teacher = relationship("Teacher", backref="courses")
+
+    results = relationship("Result", back_populates="courses", cascade="all, delete-orphan")
+    assignments = relationship("Assignment", back_populates="courses", cascade="all, delete-orphan")
+
 
 # ----------------- ASSIGNMENT -----------------
 class Assignment(Base):
     __tablename__ = 'assignments'
 
     id = Column(Integer, primary_key=True)
-    course_code = Column(String(50))  # Optional FK to Course
-    teacher = Column(String(100))     # Optional FK to Teacher table
+
+    course_id = Column(Integer, ForeignKey("courses.id", ondelete="CASCADE", onupdate="CASCADE"))
+    teacher_id = Column(Integer, ForeignKey("teachers.id", ondelete="CASCADE", onupdate="CASCADE"))
     student_id = Column(Integer, ForeignKey("students.id", ondelete="CASCADE", onupdate="CASCADE"))
 
     title = Column(String(255))
@@ -102,6 +113,9 @@ class Assignment(Base):
     attachment = Column(String(255))
 
     student = relationship("Student", back_populates="assignments")
+    course = relationship("Course", back_populates="assignments")
+    teacher = relationship("Teacher", backref="assignments")
+
 
 # ----------------- PAYMENT -----------------
 class Payment(Base):
@@ -318,43 +332,29 @@ class FormData(Base):
     phone = Column(String(20))
     registration_fee = Column(String(100))
 
-# ----------------- ROOM AVAILABILITY -----------------
-class RoomAvailabilityStatus(str, enum.Enum):
-    pending = "pending"
-    approved = "approved"
-    rejected = "rejected"
+# ---------------- ROOM BOOKINGS ---------------
+class RoomBookingStatus(str, enum.Enum):
     available = "available"
     unavailable = "unavailable"
-
-class RoomAvailability(Base):
-    __tablename__ = 'room_availability'
-
-    room_id = Column(Integer, primary_key=True)
-    location = Column(String(255))
-    capacity = Column(Integer)
-    available = Column(SQLEnum(RoomAvailabilityStatus))
-    date = Column(String(20))
-    start_time = Column(String(20))
-    end_time = Column(String(20))
-
-# ----------------- ROOM BOOKING -----------------
-class RoomBookingStatus(str, enum.Enum):
-    approved = "approved"
-    rejected = "rejected"
-    pending = "pending"
 
 class RoomBooking(Base):
     __tablename__ = 'room_bookings'
 
-    id = Column(Integer, primary_key=True)
-    room_id = Column(Integer, ForeignKey("room_availability.room_id", ondelete="CASCADE", onupdate="CASCADE"))
-    booking_date = Column(String(20))
-    start_time = Column(String(20))
-    end_time = Column(String(20))
-    booking_purpose = Column(String(255))
-    status = Column(SQLEnum(RoomBookingStatus))
+    room_id = Column(Integer, primary_key=True)
+    location = Column(String(255), nullable=False)      
+    capacity = Column(Integer, nullable=False)          
 
-    room = relationship("RoomAvailability", backref="bookings")
+    date = Column(String(20))                           
+    start_time = Column(String(20))                   
+    end_time = Column(String(20))
+
+    booking_purpose = Column(String(255))
+    status = Column(SQLEnum(RoomBookingStatus), default="available")
+
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="SET NULL", onupdate="CASCADE"))
+    booking_time = Column(String(50))                   
+
+    user = relationship("User", backref="room_bookings")
 
 # ----------------- EXAM SCHEDULE -----------------
 class ExamSchedule(Base):
