@@ -2,6 +2,7 @@ from pydantic import BaseModel, EmailStr
 from datetime import datetime
 from typing import Optional, Any
 from datetime import date, time
+from app.schemas.schema import RoomBookingStatus,MeetingStatus as MeetingStatusEnum, CourseTypeEnum
 
 class AdminCreate(BaseModel):
     email: EmailStr
@@ -58,7 +59,6 @@ class RoomBookingInput(BaseModel):
     end_time: time
     booking_purpose: Optional[str] = None
 
-from app.schemas.schema import RoomBookingStatus,MeetingStatus as MeetingStatusEnum
 
 class UpdateRoomBookingStatusInput(BaseModel):
     booking_id: int
@@ -88,3 +88,31 @@ class MeetingOut(BaseModel):
     host_name: str
     location: str
     status: MeetingStatusEnum
+
+class CourseCreate(BaseModel):
+    code: str
+    title: str
+    credit: int
+    type: CourseTypeEnum
+    year: str
+    semester: str
+    active: Optional[bool] = True
+    content: Optional[str] = None
+    degree: str
+    teacher_id: Optional[int] = None
+
+class CourseUpdateAdmin(BaseModel):
+    code: Optional[str]
+    title: Optional[str]
+    credit: Optional[int]
+    type: Optional[CourseTypeEnum]
+    year: Optional[str]
+    semester: Optional[str]
+    active: Optional[bool]
+    content: Optional[str]
+    degree: Optional[str]
+    teacher_id: Optional[int]=None
+
+class CourseUpdateTeacher(BaseModel):
+    content: str
+
