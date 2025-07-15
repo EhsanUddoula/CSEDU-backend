@@ -44,10 +44,10 @@ class Student(Base):
     email = Column(String(100))
     address = Column(String(255))
     profile_pic = Column(String(255))
-    semester = Column(String(20))
+    semester = Column(String(100))
     degree = Column(String(100))
 
-    user = relationship("User", back_populates="student")
+    user = relationship("User", back_populates="student" ,uselist=False)
     results = relationship("Result", back_populates="student", cascade="all, delete-orphan")
     assignments = relationship("Assignment", back_populates="student", cascade="all, delete-orphan")
     payments = relationship("Payment", back_populates="student", cascade="all, delete-orphan")
@@ -58,7 +58,7 @@ class Result(Base):
     __tablename__ = 'results'
 
     id = Column(Integer, primary_key=True)
-    semester = Column(String(50))
+    semester = Column(String(100))
     grade = Column(String(10))
 
     student_id = Column(Integer, ForeignKey("students.id", ondelete="CASCADE", onupdate="CASCADE"))
@@ -91,8 +91,8 @@ class Course(Base):
     teacher_id = Column(Integer, ForeignKey("teachers.id", ondelete="SET NULL", onupdate="CASCADE"))
     teacher = relationship("Teacher", backref="courses")
 
-    results = relationship("Result", back_populates="courses", cascade="all, delete-orphan")
-    assignments = relationship("Assignment", back_populates="courses", cascade="all, delete-orphan")
+    results = relationship("Result", back_populates="course", cascade="all, delete-orphan")
+    assignments = relationship("Assignment", back_populates="course", cascade="all, delete-orphan")
 
 
 # ----------------- ASSIGNMENT -----------------
@@ -153,6 +153,7 @@ class Teacher(Base):
 
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE", onupdate="CASCADE"), unique=True)
+    registration_number = Column(String(100), unique=True, nullable=False)
 
     name = Column(String(100))
     bio = Column(Text)
@@ -167,7 +168,7 @@ class Teacher(Base):
     socials_github = Column(String(255))
     socials_twitter = Column(String(255))
 
-    user = relationship("User", backref="teacher", cascade="all, delete-orphan", uselist=False)
+    user = relationship("User", back_populates="teacher", uselist=False)
 
     # Relationships
     education = relationship("Education", back_populates="teacher", cascade="all, delete-orphan")
@@ -264,7 +265,7 @@ class Admin(Base):
     password = Column(String(255))
     phone = Column(String(20))
 
-    user = relationship("User", backref="admin", cascade="all, delete-orphan", uselist=False)
+    user = relationship("User", back_populates="admin", uselist=False)
 
 # ----------------- NOTICE -----------------
 class NoticeCategory(str, enum.Enum):
