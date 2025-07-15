@@ -59,7 +59,10 @@ def add_student_meta(
         registration_number=data.registration_number,
         email=data.email,
         name=data.name,
-        semester=data.semester
+        semester=data.semester,
+        session= data.session, 
+        hall= data.hall,
+        degree= data.degree
     )
     db.add(student)
     db.commit()

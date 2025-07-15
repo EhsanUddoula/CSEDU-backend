@@ -13,6 +13,9 @@ class StudentMetaInput(BaseModel):
     registration_number: str
     name: str
     semester: str
+    session: str
+    hall: str
+    degree: str
 
 class StudentSignup(BaseModel):
     email: EmailStr
@@ -34,3 +37,9 @@ class AdminUpdate(BaseModel):
     name: str
     phone: str
     password: str
+
+class StudentUpdate(BaseModel):
+    father_name: Optional[str]
+    mother_name: Optional[str]
+    phone: Optional[str]
+    address: Optional[str]
