@@ -58,8 +58,33 @@ class RoomBookingInput(BaseModel):
     end_time: time
     booking_purpose: Optional[str] = None
 
-from app.schemas.schema import RoomBookingStatus
+from app.schemas.schema import RoomBookingStatus,MeetingStatus as MeetingStatusEnum
 
 class UpdateRoomBookingStatusInput(BaseModel):
     booking_id: int
     status: RoomBookingStatus
+
+class MeetingCreate(BaseModel):
+    date: date
+    time: time
+    topic: str
+    host_name: str
+    location: str
+    status: MeetingStatusEnum = MeetingStatusEnum.pending
+
+class MeetingUpdate(BaseModel):
+    date: Optional[date]
+    time: Optional[time]
+    topic: Optional[str]
+    host_name: Optional[str]
+    location: Optional[str]
+    status: Optional[MeetingStatusEnum]
+
+class MeetingOut(BaseModel):
+    id: int
+    date: date
+    time: time
+    topic: str
+    host_name: str
+    location: str
+    status: MeetingStatusEnum
