@@ -303,9 +303,9 @@ class Event(Base):
 
     id = Column(Integer, primary_key=True)
     title = Column(String(255))
-    date = Column(String(20))
-    start_time = Column(String(20))
-    end_time = Column(String(20))
+    date = Column(Date)
+    start_time = Column(Time)
+    end_time = Column(Time)
     location = Column(String(255))
     description = Column(Text)
     detailed_description = Column(Text)
@@ -337,24 +337,33 @@ class FormData(Base):
 class RoomBookingStatus(str, enum.Enum):
     available = "available"
     unavailable = "unavailable"
+    booked = "booked"
+
+class Room(Base):
+    __tablename__ = 'rooms'
+
+    id = Column(Integer, primary_key=True)
+    location = Column(String(255), nullable=False)
+    capacity = Column(Integer, nullable=False)
+
+    bookings = relationship("RoomBooking", back_populates="room", cascade="all, delete-orphan")
 
 class RoomBooking(Base):
     __tablename__ = 'room_bookings'
 
-    room_id = Column(Integer, primary_key=True)
-    location = Column(String(255), nullable=False)      
-    capacity = Column(Integer, nullable=False)          
-
-    date = Column(String(20))                           
-    start_time = Column(String(20))                   
-    end_time = Column(String(20))
+    id = Column(Integer, primary_key=True)
+    room_id = Column(Integer, ForeignKey("rooms.id", ondelete="CASCADE"), nullable=False)
+    
+    date = Column(Date)
+    start_time = Column(Time)
+    end_time = Column(Time)
 
     booking_purpose = Column(String(255))
-    status = Column(SQLEnum(RoomBookingStatus), default="available")
+    status = Column(SQLEnum(RoomBookingStatus))
+    booking_time = Column(DateTime)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="SET NULL"))
 
-    user_id = Column(Integer, ForeignKey("users.id", ondelete="SET NULL", onupdate="CASCADE"))
-    booking_time = Column(String(50))                   
-
+    room = relationship("Room", back_populates="bookings")
     user = relationship("User", backref="room_bookings")
 
 # ----------------- EXAM SCHEDULE -----------------
@@ -362,9 +371,9 @@ class ExamSchedule(Base):
     __tablename__ = 'exam_schedules'
 
     id = Column(Integer, primary_key=True)
-    date = Column(String(20))
-    start_time = Column(String(20))
-    end_time = Column(String(20))
+    date = Column(Date)
+    start_time = Column(Time)
+    end_time = Column(Time)
     course_id = Column(Integer, ForeignKey("courses.id", ondelete="SET NULL", onupdate="CASCADE"), nullable=True)
     room_no = Column(String(50))
     invigilator = Column(String(100))
@@ -382,8 +391,8 @@ class Meeting(Base):
     __tablename__ = 'meetings'
 
     id = Column(Integer, primary_key=True)
-    date = Column(String(20))
-    time = Column(String(20))
+    date = Column(Date)
+    time = Column(Time)
     topic = Column(String(255))
     host_name = Column(String(100))
     location = Column(String(255))

@@ -1,6 +1,7 @@
 from pydantic import BaseModel, EmailStr
 from datetime import datetime
 from typing import Optional, Any
+from datetime import date, time
 
 class AdminCreate(BaseModel):
     email: EmailStr
@@ -43,3 +44,22 @@ class StudentUpdate(BaseModel):
     mother_name: Optional[str]
     phone: Optional[str]
     address: Optional[str]
+
+class RoomCreateInput(BaseModel):
+    room_id: int
+    location: str
+    capacity: int
+
+
+class RoomBookingInput(BaseModel):
+    room_id: int
+    date: date
+    start_time: time
+    end_time: time
+    booking_purpose: Optional[str] = None
+
+from app.schemas.schema import RoomBookingStatus
+
+class UpdateRoomBookingStatusInput(BaseModel):
+    booking_id: int
+    status: RoomBookingStatus
