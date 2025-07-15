@@ -116,3 +116,52 @@ class CourseUpdateAdmin(BaseModel):
 class CourseUpdateTeacher(BaseModel):
     content: str
 
+class EducationCreate(BaseModel):
+    degree_name: str
+    major: str
+    institution: str
+    year: str
+
+class EducationUpdate(BaseModel):
+    degree_name: Optional[str]
+    major: Optional[str]
+    institution: Optional[str]
+    year: Optional[str]
+
+class ExperienceCreate(BaseModel):
+    title: str
+    organization: str
+    duration: str
+    year: str
+
+class ExperienceUpdate(BaseModel):
+    title: Optional[str]
+    organization: Optional[str]
+    duration: Optional[str]
+    year: Optional[str]
+
+# AWARD
+class AwardCreate(BaseModel):
+    title: str
+    type: str
+    description: str
+    year: str
+
+class AwardUpdate(BaseModel):
+    title: Optional[str]
+    type: Optional[str]
+    description: Optional[str]
+    year: Optional[str]
+
+
+# PUBLICATION
+class PublicationCreate(BaseModel):
+    title: str
+    type: str
+    url: str
+
+class PublicationUpdate(BaseModel):
+    title: Optional[str]
+    type: Optional[str]
+    url: Optional[str]
+

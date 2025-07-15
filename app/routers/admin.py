@@ -31,7 +31,7 @@ def admin_signup(admin_data: AdminCreate, db: Session = Depends(get_db)):
 
     # Generate JWT token
     token_data = {
-        "user_id": user.id,
+        "id": user.id,
         "role": user.role.value
     }
     access_token = create_access_token(token_data)
