@@ -165,3 +165,21 @@ class PublicationUpdate(BaseModel):
     type: Optional[str]
     url: Optional[str]
 
+class ExamScheduleCreate(BaseModel):
+    date: date
+    start_time: time
+    end_time: time
+    course_id: int
+    room_no: str
+    invigilator: str
+    semester: str
+
+class ExamScheduleUpdate(BaseModel):
+    date: Optional[date]
+    start_time: Optional[time]
+    end_time: Optional[time]
+    course_id: Optional[int]
+    room_no: Optional[str]
+    invigilator: Optional[str]
+    semester: Optional[str]
+

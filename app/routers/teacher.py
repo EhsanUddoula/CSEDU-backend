@@ -121,3 +121,77 @@ async def update_teacher_profile(
 
     db.commit()
     return {"message": "Teacher profile updated successfully"}
+
+@router.get("/all")
+def get_all_teachers(db: Session = Depends(get_db)):
+    teachers = db.query(Teacher).all()
+    return [
+        {
+            "id": teacher.id,
+            "name": teacher.name,
+            "email": teacher.email,
+            "title": teacher.title,
+            "department": teacher.department,
+            "profile_pic": teacher.profile_pic
+        }
+        for teacher in teachers
+    ]
+
+@router.get("/detail/{teacher_id}")
+def get_teacher_detail(teacher_id: int, db: Session = Depends(get_db)):
+    teacher = db.query(Teacher).filter(Teacher.id == teacher_id).first()
+    if not teacher:
+        raise HTTPException(status_code=404, detail="Teacher not found")
+
+    return {
+        "id": teacher.id,
+        "name": teacher.name,
+        "email": teacher.email,
+        "registration_number": teacher.registration_number,
+        "title": teacher.title,
+        "department": teacher.department,
+        "bio": teacher.bio,
+        "phone": teacher.phone,
+        "profile_pic": teacher.profile_pic,
+        "research_profile": teacher.research_profile,
+        "socials": {
+            "linkedin": teacher.socials_linkedin,
+            "github": teacher.socials_github,
+            "twitter": teacher.socials_twitter
+        },
+        "education": [
+            {
+                "degree_name": e.degree_name,
+                "major": e.major,
+                "institution": e.institution,
+                "year": e.year
+            }
+            for e in teacher.education
+        ],
+        "experience": [
+            {
+                "title": ex.title,
+                "organization": ex.organization,
+                "duration": ex.duration,
+                "year": ex.year
+            }
+            for ex in teacher.experience
+        ],
+        "awards": [
+            {
+                "title": a.title,
+                "type": a.type,
+                "description": a.description,
+                "year": a.year
+            }
+            for a in teacher.awards
+        ],
+        "publications": [
+            {
+                "type": p.type,
+                "title": p.title,
+                "url": p.url
+            }
+            for p in teacher.publications
+        ]
+    }

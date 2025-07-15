@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File, Form
+from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File, Form, Query
 from sqlalchemy.orm import Session
 import os
 from .. import utils
@@ -7,6 +7,7 @@ from app.schemas.schema import User,RoleEnum,Student
 from app.models.models import StudentSignup
 from app.oauth2 import get_current_user
 from .fileUtils import save_upload
+from sqlalchemy import asc, desc
 
 router = APIRouter(
     prefix="/student",
@@ -110,3 +111,44 @@ async def update_student_profile(
 
     db.commit()
     return {"message": "Student profile updated successfully"}
+
+@router.get("/all")
+def get_all_students(
+    session: str = Query(None),
+    semester: str = Query(None),
+    hall: str = Query(None),
+    registration_number: str = Query(None),
+    sort_order: str = Query("asc"),  # 'asc' or 'desc'
+    db: Session = Depends(get_db)
+):
+    query = db.query(Student)
+
+    if session:
+        query = query.filter(Student.session == session)
+    if semester:
+        query = query.filter(Student.semester == semester)
+    if hall:
+        query = query.filter(Student.hall == hall)
+    if registration_number:
+        query = query.filter(Student.registration_number.ilike(f"%{registration_number}%"))
+
+    if sort_order == "desc":
+        query = query.order_by(desc(Student.registration_number))
+    else:
+        query = query.order_by(asc(Student.registration_number))
+
+    students = query.all()
+
+    return [
+        {
+            "id": student.id,
+            "registration_number": student.registration_number,
+            "name": student.name,
+            "email": student.email,
+            "session": student.session,
+            "semester": student.semester,
+            "hall": student.hall,
+            "profile_pic": student.profile_pic
+        }
+        for student in students
+    ]
