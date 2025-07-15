@@ -133,3 +133,68 @@ def update_admin_info(
     db.refresh(admin)
 
     return {"message": "Admin profile updated successfully"}
+
+@router.put("/update/student/{student_id}")
+def update_student_meta(
+    student_id: int,
+    data: StudentMetaInput,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    if current_user.role.value != "Admin":
+        raise HTTPException(status_code=403, detail="Only admins can perform this action.")
+
+    student = db.query(Student).filter(Student.id == student_id).first()
+    if not student:
+        raise HTTPException(status_code=404, detail="Student not found")
+
+    # Check for unique registration number if changed
+    if student.registration_number != data.registration_number:
+        if db.query(Student).filter(Student.registration_number == data.registration_number).first():
+            raise HTTPException(status_code=400, detail="Registration number already exists")
+
+    # Update fields
+    student.registration_number = data.registration_number
+    student.name = data.name
+    student.email = data.email
+    student.semester = data.semester
+    student.session = data.session
+    student.hall = data.hall
+    student.degree = data.degree
+
+    db.commit()
+    return {"message": "Student metadata updated successfully"}
+
+@router.put("/update/teacher/{teacher_id}")
+def update_teacher_meta(
+    teacher_id: int,
+    data: TeacherMetaInput,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    if current_user.role.value != "Admin":
+        raise HTTPException(status_code=403, detail="Only admins can perform this action.")
+
+    teacher = db.query(Teacher).filter(Teacher.id == teacher_id).first()
+    if not teacher:
+        raise HTTPException(status_code=404, detail="Teacher not found")
+
+    # Check for unique registration number if changed
+    if teacher.registration_number != data.registration_number:
+        if db.query(Teacher).filter(Teacher.registration_number == data.registration_number).first():
+            raise HTTPException(status_code=400, detail="Registration number already exists")
+
+    # Check for unique email if changed
+    if teacher.email != data.email:
+        if db.query(Teacher).filter(Teacher.email == data.email).first():
+            raise HTTPException(status_code=400, detail="Email already exists")
+
+    # Update fields
+    teacher.registration_number = data.registration_number
+    teacher.name = data.name
+    teacher.email = data.email
+    teacher.department = data.department
+
+    db.commit()
+    return {"message": "Teacher metadata updated successfully"}
+
