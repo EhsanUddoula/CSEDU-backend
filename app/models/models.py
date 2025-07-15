@@ -30,3 +30,7 @@ class TeacherSignup(BaseModel):
     registration_number: str
     password: str
 
+class AdminUpdate(BaseModel):
+    name: str
+    phone: str
+    password: str

@@ -5,7 +5,7 @@ from .. import utils
 from app.oauth2 import get_current_user,create_access_token
 from ..database import get_db
 from app.schemas.schema import User,Admin,RoleEnum,Student,Teacher
-from app.models.models import AdminCreate,StudentMetaInput,TeacherMetaInput
+from app.models.models import AdminCreate,StudentMetaInput,TeacherMetaInput,AdminUpdate
 
 router = APIRouter(
     prefix="/admin",
@@ -91,4 +91,42 @@ def add_teacher_meta(
     db.commit()
     return {"message": "Teacher pre-approved. Ready to sign up."}
 
+@router.get("/me")
+def get_admin_dashboard(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    if current_user.role.value != "Admin":
+        raise HTTPException(status_code=403, detail="Only admins can view this info.")
 
+    admin = db.query(Admin).filter(Admin.user_id == current_user.id).first()
+    if not admin:
+        raise HTTPException(status_code=404, detail="Admin profile not found.")
+
+    return {
+        "name": admin.name,
+        "phone": admin.phone,
+        "email": admin.email
+    }
+
+@router.put("/update")
+def update_admin_info(
+    update_data: AdminUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    if current_user.role.value != "Admin":
+        raise HTTPException(status_code=403, detail="Only admins can update their profile.")
+
+    admin = db.query(Admin).filter(Admin.user_id == current_user.id).first()
+    if not admin:
+        raise HTTPException(status_code=404, detail="Admin profile not found.")
+
+    admin.name = update_data.name
+    admin.phone = update_data.phone
+    admin.password = utils.hash(update_data.password)
+
+    db.commit()
+    db.refresh(admin)
+
+    return {"message": "Admin profile updated successfully"}
