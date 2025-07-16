@@ -61,7 +61,7 @@ class Result(Base):
     semester = Column(String(100))
     grade = Column(String(10))
 
-    student_id = Column(Integer, ForeignKey("students.id", ondelete="CASCADE", onupdate="CASCADE"))
+    student_id = Column(String(100), ForeignKey("students.registration_number", ondelete="CASCADE", onupdate="CASCADE"))
     course_code = Column(String(50), ForeignKey("courses.code", ondelete="CASCADE", onupdate="CASCADE"))
 
     student = relationship("Student", back_populates="results")
@@ -103,7 +103,7 @@ class Assignment(Base):
 
     course_code = Column(String(50), ForeignKey("courses.code", ondelete="CASCADE", onupdate="CASCADE"))
     teacher_id = Column(Integer, ForeignKey("teachers.id", ondelete="CASCADE", onupdate="CASCADE"))
-    student_id = Column(Integer, ForeignKey("students.id", ondelete="CASCADE", onupdate="CASCADE"))
+    student_id = Column(String(100), ForeignKey("students.registration_number", ondelete="CASCADE", onupdate="CASCADE"))
 
     title = Column(String(255))
     instructions = Column(Text)
@@ -122,7 +122,7 @@ class Payment(Base):
     __tablename__ = 'payments'
 
     payment_no = Column(Integer, primary_key=True)
-    student_id = Column(Integer, ForeignKey("students.id", ondelete="CASCADE", onupdate="CASCADE"))
+    student_id = Column(String(100), ForeignKey("students.registration_number", ondelete="CASCADE", onupdate="CASCADE"))
     fee = Column(String(100))
     cause = Column(String(255))
 
@@ -141,7 +141,7 @@ class EquipmentBooking(Base):
     __tablename__ = 'equipment_bookings'
 
     id = Column(Integer, primary_key=True)
-    student_id = Column(Integer, ForeignKey("students.id", ondelete="CASCADE", onupdate="CASCADE"))
+    student_id = Column(String(100), ForeignKey("students.registration_number", ondelete="CASCADE", onupdate="CASCADE"))
     booking_time = Column(DateTime)
     return_date = Column(DateTime)
 

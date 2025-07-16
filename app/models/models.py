@@ -197,3 +197,23 @@ class FormDataOut(FormDataCreate):
 
     class Config:
         orm_mode = True
+
+class ResultCreate(BaseModel):
+    semester: str
+    grade: str
+    student_id: str       # registration_number
+    course_code: str
+
+class ResultUpdate(BaseModel):
+    semester: Optional[str]
+    grade: Optional[str]
+
+class ResultOut(BaseModel):
+    id: int
+    semester: str
+    grade: str
+    student_id: str
+    course_code: str
+
+    class Config:
+        orm_mode = True
