@@ -183,3 +183,17 @@ class ExamScheduleUpdate(BaseModel):
     invigilator: Optional[str]
     semester: Optional[str]
 
+class FormDataCreate(BaseModel):
+    name: str
+    email: str
+    roll: str
+    registration_id: str
+    batch_no: str
+    phone: str
+    registration_fee: str
+
+class FormDataOut(FormDataCreate):
+    id: int
+
+    class Config:
+        orm_mode = True
