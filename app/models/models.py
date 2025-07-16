@@ -169,7 +169,7 @@ class ExamScheduleCreate(BaseModel):
     date: date
     start_time: time
     end_time: time
-    course_id: int
+    course_code: str
     room_no: str
     invigilator: str
     semester: str
@@ -178,7 +178,7 @@ class ExamScheduleUpdate(BaseModel):
     date: Optional[date]
     start_time: Optional[time]
     end_time: Optional[time]
-    course_id: Optional[int]
+    course_code: Optional[str]
     room_no: Optional[str]
     invigilator: Optional[str]
     semester: Optional[str]
