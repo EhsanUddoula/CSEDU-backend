@@ -62,7 +62,7 @@ class Result(Base):
     grade = Column(String(10))
 
     student_id = Column(Integer, ForeignKey("students.id", ondelete="CASCADE", onupdate="CASCADE"))
-    course_id = Column(Integer, ForeignKey("courses.id", ondelete="CASCADE", onupdate="CASCADE"))
+    course_code = Column(String(50), ForeignKey("courses.code", ondelete="CASCADE", onupdate="CASCADE"))
 
     student = relationship("Student", back_populates="results")
     course = relationship("Course", back_populates="results")
@@ -101,7 +101,7 @@ class Assignment(Base):
 
     id = Column(Integer, primary_key=True)
 
-    course_id = Column(Integer, ForeignKey("courses.id", ondelete="CASCADE", onupdate="CASCADE"))
+    course_code = Column(String(50), ForeignKey("courses.code", ondelete="CASCADE", onupdate="CASCADE"))
     teacher_id = Column(Integer, ForeignKey("teachers.id", ondelete="CASCADE", onupdate="CASCADE"))
     student_id = Column(Integer, ForeignKey("students.id", ondelete="CASCADE", onupdate="CASCADE"))
 
@@ -237,7 +237,7 @@ class Routine(Base):
     semester = Column(String(50))
     day = Column(String(20))  # e.g., Monday
     time_interval = Column(String(50))  # e.g., 9:00-10:30
-    course_id = Column(Integer, ForeignKey("courses.id", ondelete="SET NULL", onupdate="CASCADE"), nullable=True)
+    course_code = Column(String(50), ForeignKey("courses.code", ondelete="SET NULL", onupdate="CASCADE"), nullable=True)
     room_no = Column(String(50))
     teacher_id = Column(Integer, ForeignKey("teachers.id", ondelete="CASCADE", onupdate="CASCADE"))
 
@@ -374,7 +374,7 @@ class ExamSchedule(Base):
     date = Column(Date)
     start_time = Column(Time)
     end_time = Column(Time)
-    course_id = Column(Integer, ForeignKey("courses.id", ondelete="SET NULL", onupdate="CASCADE"), nullable=True)
+    course_code = Column(String(50), ForeignKey("courses.code", ondelete="SET NULL", onupdate="CASCADE"), nullable=True)
     room_no = Column(String(50))
     invigilator = Column(String(100))
     semester = Column(String(20))
@@ -397,6 +397,9 @@ class Meeting(Base):
     host_name = Column(String(100))
     location = Column(String(255))
     status = Column(SQLEnum(MeetingStatus))
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="SET NULL"))
+
+    user = relationship("User", backref="meetings")
 
 # ----------------- APPLICATION -----------------
 class Application(Base):

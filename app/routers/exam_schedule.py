@@ -88,7 +88,7 @@ def filter_exams(
         course = db.query(Course).filter(Course.title.ilike(f"%{course_title}%")).first()
         if not course:
             return []  # No exams if course doesn't exist
-        filters.append(ExamSchedule.course_id == course.id)
+        filters.append(ExamSchedule.course_code == course.code)
 
     exams = db.query(ExamSchedule).filter(and_(*filters)).all()
     return exams
