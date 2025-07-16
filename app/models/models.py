@@ -217,3 +217,22 @@ class ResultOut(BaseModel):
 
     class Config:
         orm_mode = True
+class Routine(BaseModel):
+    id: int
+    year: str
+    semester: str
+    course_code: str
+    day: str  # e.g., Monday    course_title: str
+    teacher_name: str
+    time_interval: str
+    room_no: str
+
+    class Config:
+        orm_mode = True
+        
+class ContactMessageCreate(BaseModel):
+    firstName: str
+    lastName: str
+    email: EmailStr
+    subject: str
+    message: str

@@ -244,15 +244,15 @@ class Routine(Base):
     teacher = relationship("Teacher", back_populates="routines")
 
 # ----------------- CONTACT -----------------
-class Contact(Base):
-    __tablename__ = 'contacts'
+# class Contact(Base):
+#     __tablename__ = 'contacts'
 
-    id = Column(Integer, primary_key=True)
-    first_name = Column(String(100))
-    last_name = Column(String(100))
-    email = Column(String(100))
-    subject = Column(String(255))
-    message = Column(Text)
+#     id = Column(Integer, primary_key=True)
+#     first_name = Column(String(100))
+#     last_name = Column(String(100))
+#     email = Column(String(100))
+#     subject = Column(String(255))
+#     message = Column(Text)
 
 # ----------------- ADMIN -----------------
 class Admin(Base):
@@ -416,3 +416,26 @@ class Application(Base):
     apply_for = Column(String(100))
     recommender1_email = Column(String(100))
     recommender2_email = Column(String(100))
+
+# class Routine(Base):
+#     __tablename__ = 'routines'
+#     id = Column(Integer, primary_key=True)
+#     year = Column(String(50))
+#     semester = Column(String(50))
+#     day = Column(String(20))  # e.g., Monday
+#     time_interval = Column(String(50))  # e.g., 9:00-10:30
+#     course_code = Column(String(50), ForeignKey("courses.code", ondelete="SET NULL", onupdate="CASCADE"), nullable=True)
+#     room_no = Column(String(50))
+#     teacher_id = Column(Integer, ForeignKey("teachers.id", ondelete="CASCADE", onupdate="CASCADE"))
+#     teacher_name = Column(String(100),ForeignKey("teachers.name", ondelete="SET NULL", onupdate="CASCADE"))
+
+#     teacher = relationship("Teacher", back_populates="routines", foreign_keys=[teacher_id])
+
+class ContactMessage(Base):
+    __tablename__ = "contact_messages"
+    id = Column(Integer, primary_key=True, index=True)
+    first_name = Column(String(100))
+    last_name = Column(String(100))
+    email = Column(String(100))
+    subject = Column(String(200))
+    message = Column(Text)
