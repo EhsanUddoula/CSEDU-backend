@@ -140,3 +140,12 @@ def list_courses(
         "page_size": page_size,
         "courses": courses,
     }
+
+@router.get("/{teacher_id}")
+def get_courses_by_teacher(teacher_id: int, db: Session = Depends(get_db)):
+    courses = db.query(Course).filter(Course.teacher_id == teacher_id).all()
+
+    if not courses:
+        raise HTTPException(status_code=404, detail="No courses found for this teacher")
+
+    return courses
