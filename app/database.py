@@ -5,7 +5,6 @@ import app.config as config
 
 SQLALCHEMY_DATABASE_URL = (
     f"mysql+pymysql://{config.DB_USER}:{config.DB_PASSWORD}@{config.DB_HOST}:{config.DB_PORT}/{config.DB_NAME}"
-    # f"mysql+pymysql://avnadmin:AVNS_va6pSM91UVO0FVZc2wj@mysql-3fe62e2a-csedu.f.aivencloud.com:14594/defaultdb"
 )
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL, echo=True)
