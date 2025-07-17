@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from app.database import engine, Base
 from app.schemas.schema import Base
-from .routers import auth,admin,student,teacher,fileUtils,roomBook,meetings,courses,education,experience,award,publication,exam_schedule,notice,event,result
+from .routers import auth,admin,student,teacher,fileUtils,roomBook,meetings,courses,education,experience,award,publication,exam_schedule,notice,event,result,equipment
 from fastapi.middleware.cors import CORSMiddleware 
 
 
@@ -24,6 +24,7 @@ app.include_router(exam_schedule.router)
 app.include_router(notice.router)
 app.include_router(event.router)
 app.include_router(result.router)
+app.include_router(equipment.router)
 
 def configure_cors(app): 
     origins = [ 

@@ -217,3 +217,21 @@ class ResultOut(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class EquipmentBase(BaseModel):
+    name: str
+    availability: Optional[bool] = True
+
+class EquipmentCreate(EquipmentBase):
+    pass
+
+class EquipmentUpdate(BaseModel):
+    name: Optional[str] = None
+    availability: Optional[bool] = None
+
+class EquipmentOut(EquipmentBase):
+    id: int
+
+    class Config:
+        orm_mode = True
