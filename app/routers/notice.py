@@ -91,3 +91,10 @@ def update_notice(
 def get_all_notices(db: Session = Depends(get_db)):
     return db.query(Notice).filter(Notice.is_archived == False).all()
 
+@router.get("/{notice_id}")
+def get_notice(notice_id: int, db: Session = Depends(get_db)):
+    notice = db.query(Notice).filter(Notice.id == notice_id).first()
+    if not notice:
+        raise HTTPException(status_code=404, detail="Notice not found.")
+    return notice
+
