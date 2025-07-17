@@ -61,30 +61,6 @@ def add_education(
     db.refresh(edu)
     return edu
 
-@router.post("/add")
-def add_education(
-    data: EducationCreate,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
-):
-    if current_user.role != RoleEnum.teacher:
-        raise HTTPException(status_code=403, detail="Only teachers can add education.")
-
-    teacher = current_user.teacher
-    if not teacher:
-        raise HTTPException(status_code=404, detail="Teacher profile not found.")
-
-    edu = Education(
-        degree_name=data.degree_name,
-        major=data.major,
-        institution=data.institution,
-        year=data.year,
-        teacher_id=teacher.id
-    )
-    db.add(edu)
-    db.commit()
-    db.refresh(edu)
-    return edu
 
 @router.put("/update/{education_id}")
 def update_education(

@@ -154,3 +154,14 @@ def update_booking_status(
     booking.status = data.status
     db.commit()
     return {"message": "Booking status updated successfully"}
+
+@router.get("/booked")
+def get_booked_room_bookings(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    if current_user.role.value not in ["Admin", "Teacher"]:
+        raise HTTPException(status_code=403, detail="Access denied.")
+
+    booked_entries = db.query(RoomBooking).filter(RoomBooking.status == RoomBookingStatus.booked).all()
+    return booked_entries
