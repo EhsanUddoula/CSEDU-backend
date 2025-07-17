@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
-from models import EquipmentList, User  # adjust import paths as needed
-from database import get_db
+from app.schemas.schema import EquipmentList, User  # adjust import paths as needed
+from app.database import get_db
 from app.oauth2 import get_current_user
-from schemas import EquipmentCreate, EquipmentUpdate, EquipmentOut  # adjust import paths
+from app.models.models import EquipmentCreate, EquipmentUpdate, EquipmentOut  # adjust import paths
 
 router = APIRouter(prefix="/equipment", tags=["Equipment List"])
 
