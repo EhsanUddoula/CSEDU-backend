@@ -24,7 +24,7 @@ This is the backend system for the CSEDU university department website built wit
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/EhsanUddoula/csedu-backend.git
+git clone https://github.com/EhsanUddoula/CSEDU-backend.git
 cd CSEDU-backend
 ```
 
